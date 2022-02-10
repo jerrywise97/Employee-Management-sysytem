@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +29,7 @@ class EmployeeRepositoryTest {
 
     @Test
     @DisplayName("save a new employee to the datebase")
-    public void saveEmployeeInTheDataBase(){
+    public void saveEmployeeInTheDataBaseTest(){
         //given i create a new employee
         Employee employee = new Employee();
         employee.setName("jerry");
@@ -67,10 +68,32 @@ class EmployeeRepositoryTest {
     }
 
     @Test
-    @DisplayName("find all employee in the databse")
+    @DisplayName("find all employee in the database")
     public void findAllEmployeeTest(){
         List<Employee> employeeList = employeeRepository.findAll();
         assertThat(employeeList.size()).isEqualTo(4);
         assertThat(employeeList).isNotNull();
+    }
+
+    @Test
+    @DisplayName("delete an employee from the database")
+    public void deleteAnEmployeeFromTheDataBaseTest(){
+        employeeRepository.deleteById(13L);
+
+        Employee retrieveEmployee = employeeRepository.findById(13L).orElse(null);
+        assertThat(retrieveEmployee).isNull();
+        assertThat(employeeRepository.findAll().size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("")
+    public void findEmployeeInDataBaseByNameTest(){
+       Employee foundEmployee= employeeRepository.findByName("giidy").orElse(null);
+
+       assertThat(foundEmployee).isNotNull();
+       assertThat(foundEmployee.getId()).isEqualTo(12);
+       assertThat(foundEmployee.getName()).isEqualTo("giidy");
+       assertThat(foundEmployee.getMobileNumber()).isEqualTo("08037227");
+
     }
 }
